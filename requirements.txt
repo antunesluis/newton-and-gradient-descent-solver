@@ -1,5 +1,6 @@
 numpy
 scipy
 matplotlib
-PyQt6  # ou tkinter, dependendo da sua escolha
+PyQt6
+PySide6
 

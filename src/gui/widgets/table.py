@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
+from PySide6.QtGui import QFont
 
 
 class TableWidget(QTableWidget):
@@ -11,6 +12,10 @@ class TableWidget(QTableWidget):
         # Ajustar o tamanho das células
         self.resizeColumnsToContents()
         self.resizeRowsToContents()
+
+        font = self.font()
+        font.setPointSize(15)
+        self.setFont(font)
 
         # Configurar os cabeçalhos para se expandirem conforme o espaço disponível
         header = self.horizontalHeader()
@@ -29,7 +34,11 @@ class TableWidget(QTableWidget):
 
     def fill_table(self, data):
         self.setRowCount(len(data))
+        font = QFont()
+        font.setPointSize(12)  # Ajuste o tamanho da fonte conforme necessário
+
         for row_idx, row_data in enumerate(data):
             for col_idx, col_data in enumerate(row_data):
                 item = QTableWidgetItem(str(col_data))
+                item.setFont(font)
                 self.setItem(row_idx, col_idx, item)

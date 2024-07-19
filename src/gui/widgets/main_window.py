@@ -1,47 +1,16 @@
-from PySide6.QtWidgets import (
-    QMainWindow,
-    QGridLayout,
-    QWidget,
-    QMessageBox,
-    QLineEdit,
-    QLabel,
-)
+from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget
+from gui.widgets.tab_widget import TabWidget
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, parent: QWidget | None = None, *args, **kwargs) -> None:
-        super().__init__(parent, *args, **kwargs)
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setWindowTitle("Calculadora com Abas")
 
         self.cw = QWidget()
-        self.gridLayout = QGridLayout()
-        self.cw.setLayout(self.gridLayout)
+        self.layout = QVBoxLayout(self.cw)  # type: ignore
         self.setCentralWidget(self.cw)
 
-        # Título da janela
-        self.setWindowTitle("Calculadora")
-
-        # Adicionar label e input para equação
-        self.equation_label = QLabel("Equação:")
-        self.equation_input = QLineEdit()
-
-        self.gridLayout.addWidget(self.equation_label, 1, 0)
-        self.gridLayout.addWidget(self.equation_input, 2, 0)
-
-    def AdjustFixedSize(self):
-        # Última coisa a ser feita
-        self.adjustSize()
-        self.setFixedSize(self.width(), self.height())
-
-    def addWidgetToGridLayout(
-        self,
-        widget: QWidget,
-        row: int,
-        column: int,
-        rowSpan: int = 1,
-        columnSpan: int = 1,
-    ):
-        self.gridLayout.addWidget(widget, row, column, rowSpan, columnSpan)
-
-    def makeMsgBox(self):
-        return QMessageBox(self)
-
+        self.tab_widget = TabWidget(self)
+        self.layout.addWidget(self.tab_widget)  # type: ignore

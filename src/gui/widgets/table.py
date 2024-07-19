@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QTableWidget, QTableWidgetItem
+from PySide6.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
 
 
 class TableWidget(QTableWidget):
@@ -9,7 +9,12 @@ class TableWidget(QTableWidget):
         self.fill_table(self.newton_method_progression())
 
         # Ajustar o tamanho das células
-        self.setCellSizes(50, 100)  # Ajuste os valores conforme necessário
+        self.resizeColumnsToContents()
+        self.resizeRowsToContents()
+
+        # Configurar os cabeçalhos para se expandirem conforme o espaço disponível
+        header = self.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Stretch)  # type: ignore
 
     def newton_method_progression(self):
         # Exemplo de dados de progressão do método de Newton
@@ -28,9 +33,3 @@ class TableWidget(QTableWidget):
             for col_idx, col_data in enumerate(row_data):
                 item = QTableWidgetItem(str(col_data))
                 self.setItem(row_idx, col_idx, item)
-
-    def setCellSizes(self, row_height, column_width):
-        for row in range(self.rowCount()):
-            self.setRowHeight(row, row_height)
-        for column in range(self.columnCount()):
-            self.setColumnWidth(column, column_width)

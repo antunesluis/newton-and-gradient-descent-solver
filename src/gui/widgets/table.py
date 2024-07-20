@@ -13,12 +13,11 @@ class TableWidget(QTableWidget):
         self.resizeColumnsToContents()
         self.resizeRowsToContents()
 
-        font = self.font()
-        font.setPointSize(15)
-        self.setFont(font)
-
         # Configurar os cabeçalhos para se expandirem conforme o espaço disponível
         header = self.horizontalHeader()
+        headerFont = header.font()
+        headerFont.setPixelSize(25)
+        header.setFont(headerFont)
         header.setSectionResizeMode(QHeaderView.Stretch)  # type: ignore
 
     def newton_method_progression(self):

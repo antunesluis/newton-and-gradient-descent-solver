@@ -5,34 +5,30 @@ from variables import BIG_FONT_SIZE
 
 
 class EquationDisplay(QWidget):
-    def __init__(self, eq1, eq2, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.eq1 = eq1
-        self.eq2 = eq2
+        self.fontSize = BIG_FONT_SIZE
+        self.eq1 = QLabel()
+        self.eq2 = QLabel()
         self.configStyle()
 
-    def configStyle(self):
         layout = QVBoxLayout()
-        font_size = BIG_FONT_SIZE
-
-        eq1_label = QLabel(self.eq1)
-        eq2_label = QLabel(self.eq2)
-
-        # Configurar o estilo das equações
-        font = eq1_label.font()
-        font.setPointSize(font_size)
-
-        eq1_label.setFont(font)
-        eq2_label.setFont(font)
-
-        eq1_label.setAlignment(
-            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
-        )
-        eq2_label.setAlignment(
-            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
-        )
-
-        layout.addWidget(eq1_label)
-        layout.addWidget(eq2_label)
+        layout.addWidget(self.eq1)
+        layout.addWidget(self.eq2)
 
         self.setLayout(layout)
+
+    def configStyle(self):
+        font = self.font()
+        font.setPointSize(24)
+        self.setFont(font)
+        self.eq1.setAlignment(
+            Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
+        )
+        self.eq1.setAlignment(
+            Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
+        )
+
+    def updateEquations(self, eq1_text, eq2_text):
+        self.eq1.setText(eq1_text)
+        self.eq2.setText(eq2_text)

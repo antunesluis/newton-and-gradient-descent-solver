@@ -23,9 +23,10 @@ class TabWidget(QWidget):
         self.graph_widget = GraphWidget()
         self.table_widget = TableWidget()
         self.equation_input = EquationInput()
-        self.equation_display = EquationDisplay(
-            "f(x, y) = x^2 + y^2 - 1", "g(x, y) = x - y^2"
-        )
+        self.equation_display = EquationDisplay()
+
+        # Conectar o sinal de mudança de texto ao método de atualização
+        self.equation_input.textChanged.connect(self.updateDisplayEquations)
 
         # Layout 1 do metodo de newton
         self.layout1 = QVBoxLayout()
@@ -52,3 +53,11 @@ class TabWidget(QWidget):
         self.tab2_layout = QGridLayout(self.tab2)
         # Adicione aqui os widgets para a segunda aba
         self.tabs.addTab(self.tab2, "Backpropagation")
+
+    def updateDisplayEquations(self, text):
+        # Atualize as equações do display com base no texto de entrada
+        # Aqui, estou apenas exibindo o mesmo texto em ambas as equações como exemplo
+        # Ajuste conforme necessário para as suas equações
+        self.equation_display.updateEquations(
+            f"Equação 1: {text}", f"Equação 2: {text}"
+        )

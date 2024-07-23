@@ -6,7 +6,7 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setWindowTitle("Calculadora com Abas")
+        self.setWindowTitle("Projeto Cálculo")
 
         self.cw = QWidget()
         self.layout = QVBoxLayout(self.cw)  # type: ignore

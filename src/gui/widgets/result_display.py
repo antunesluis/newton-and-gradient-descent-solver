@@ -4,7 +4,7 @@ from PySide6.QtWidgets import QLabel, QVBoxLayout, QWidget
 from variables import BIG_FONT_SIZE
 
 
-class EquationDisplay(QWidget):
+class ResultDisplay(QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fontSize = BIG_FONT_SIZE

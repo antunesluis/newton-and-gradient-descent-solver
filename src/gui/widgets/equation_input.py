@@ -1,6 +1,5 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLineEdit
-from gui.widgets.equation_display import EquationDisplay
 from variables import BIG_FONT_SIZE, MINIMUM_WIDHT, TEXT_MARGIN
 
 

@@ -14,3 +14,8 @@ class MainWindow(QMainWindow):
 
         self.tab_widget = TabWidget(self)
         self.layout.addWidget(self.tab_widget)  # type: ignore
+
+    def AdjustFixedSize(self):
+        # Ultima coisa a ser feita
+        self.adjustSize()
+        self.setFixedSize(self.width(), self.height())

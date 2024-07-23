@@ -9,29 +9,40 @@ class NewtonMethodTab(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.tab1 = QWidget()
         self.tab1Layout = QGridLayout(self)
 
         self.graphWidget = GraphWidget()
         self.tableWidget = TableWidget()
-        self.equationInput1 = EquationInput()
-        self.equationInput2 = EquationInput()
-        self.resultDisplay = ResultDisplay()
 
-        # Layout 1 do metodo de newton
+        self.resultDisplay = ResultDisplay()
+        self.equationInput1 = EquationInput("f(x, y)")
+        self.equationInput2 = EquationInput("g(x, y)")
+
+        self.equation1 = ""
+        self.equation2 = ""
+
+        self.equationInput1.equationChanged.connect(self.saveEquation1)
+        self.equationInput2.equationChanged.connect(self.saveEquation2)
+
         self.layout1 = QVBoxLayout()
         self.layout1.addWidget(self.graphWidget)
-        self.layout1.setContentsMargins(10, 10, 10, 10)  # Defina as margens
-        self.layout1.setSpacing(10)  # Defina o espaçamento
+        self.layout1.setContentsMargins(10, 10, 10, 10)
+        self.layout1.setSpacing(10)
 
-        # Layout 2 do metodo de newton
         self.layout2 = QVBoxLayout()
         self.layout2.addWidget(self.tableWidget)
-        self.layout2.addWidget(self.resultDisplay)
         self.layout2.addWidget(self.equationInput1)
         self.layout2.addWidget(self.equationInput2)
+        self.layout2.addWidget(self.resultDisplay)
         self.layout2.setContentsMargins(20, 20, 20, 20)  # Defina as margens
         self.layout2.setSpacing(10)  # Defina o espaçamento
 
-        # Unindo os Layouts do metodo de newton em um
         self.tab1Layout.addLayout(self.layout1, 0, 0, 0, 4)
         self.tab1Layout.addLayout(self.layout2, 0, 5, 0, 2)
+
+    def saveEquation1(self, text):
+        self.equation1 = text
+
+    def saveEquation2(self, text):
+        self.equation2 = text

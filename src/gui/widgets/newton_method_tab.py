@@ -61,7 +61,6 @@ class NewtonMethodTab(QWidget):
                 eq1_sym = sp.sympify(self.equation1.replace("^", "**"))
 
                 f1 = sp.lambdify((x_sym, y_sym), eq1_sym, "numpy")
-
                 if self.equation2:
                     eq2_sym = sp.sympify(self.equation2.replace("^", "**"))
                     f2 = sp.lambdify((x_sym, y_sym), eq2_sym, "numpy")

@@ -12,12 +12,12 @@ class GraphWidget(QWidget):
         self.plot_widget = pg.PlotWidget()
         layout.addWidget(self.plot_widget)  # type: ignore
 
-        # Gerar dados aleatórios
-        x = np.linspace(0, 10, 100)
-        y = np.sin(x)
+    def plot(self, x, y, z1, z2):
+        self.plot_widget.clear()
 
-        # Adicionar uma curva ao gráfico
-        self.plot_widget.plot(x, y, pen="r", label="Seno")
+        # Adicionar duas curvas ao gráfico
+        self.plot_widget.plot(x.flatten(), z1.flatten(), pen="r", label="Equação 1")
+        self.plot_widget.plot(x.flatten(), z2.flatten(), pen="b", label="Equação 2")
 
         # Adicionar uma legenda
         self.plot_widget.addLegend()

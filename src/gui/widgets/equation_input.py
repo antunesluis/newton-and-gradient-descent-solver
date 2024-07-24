@@ -1,16 +1,13 @@
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLineEdit
 from variables import BIG_FONT_SIZE, MINIMUM_WIDHT, TEXT_MARGIN
 
 
 class EquationInput(QLineEdit):
-    equationChanged = Signal(str)
-
     def __init__(self, placeHolderText: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.configStyle()
         self.setPlaceholderText(placeHolderText)
-        self.textChanged.connect(self.onTextChanged)
 
     def configStyle(self):
         margins = [TEXT_MARGIN for _ in range(4)]
@@ -20,5 +17,6 @@ class EquationInput(QLineEdit):
         self.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.setTextMargins(*margins)
 
-    def onTextChanged(self, text):
-        self.equationChanged.emit(text)  # Emite o sinal com o texto atual
+    def onReturnPressed(self):
+        # Emite o sinal com o texto atual quando Enter é pressionado
+        self.returnPressed.emit()  # Emite o sinal returnPressed

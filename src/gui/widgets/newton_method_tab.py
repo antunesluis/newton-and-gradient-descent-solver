@@ -41,8 +41,8 @@ class NewtonMethodTab(QWidget):
         self.layout2.setContentsMargins(20, 20, 20, 20)
         self.layout2.setSpacing(10)
 
-        self.tab1Layout.addLayout(self.layout1, 0, 0, 1, 4)
-        self.tab1Layout.addLayout(self.layout2, 0, 4, 1, 2)
+        self.tab1Layout.addLayout(self.layout1, 0, 0, 1, 3)
+        self.tab1Layout.addLayout(self.layout2, 0, 3, 1, 2)
 
     def saveEquation1(self):
         self.equation1 = self.equationInput1.text()
@@ -55,20 +55,19 @@ class NewtonMethodTab(QWidget):
         self.updateGraph()
 
     def updateGraph(self):
-        if self.equation1 and self.equation2:
-            x = np.linspace(-10, 10, 400)
-            y = np.linspace(-10, 10, 400)
-            x, y = np.meshgrid(x, y)
+        if self.equation1:
+            try:
+                x_sym, y_sym = sp.symbols("x y")
+                eq1_sym = sp.sympify(self.equation1.replace("^", "**"))
 
-            # Usar sympy para avaliar as equações
-            x_sym, y_sym = sp.symbols("x y")
-            eq1_sym = sp.sympify(self.equation1)
-            eq2_sym = sp.sympify(self.equation2)
+                f1 = sp.lambdify((x_sym, y_sym), eq1_sym, "numpy")
 
-            eq1_lambdified = sp.lambdify((x_sym, y_sym), eq1_sym, "numpy")
-            eq2_lambdified = sp.lambdify((x_sym, y_sym), eq2_sym, "numpy")
+                if self.equation2:
+                    eq2_sym = sp.sympify(self.equation2.replace("^", "**"))
+                    f2 = sp.lambdify((x_sym, y_sym), eq2_sym, "numpy")
+                    self.graphWidget.plot(f1, f2)
+                else:
+                    self.graphWidget.plot(f1)
 
-            z1 = eq1_lambdified(x, y)
-            z2 = eq2_lambdified(x, y)
-
-            self.graphWidget.plot(x, y, z1, z2)
+            except Exception as e:
+                print(f"Erro ao avaliar equações: {e}")

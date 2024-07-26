@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QPushButton
-from variables import BIG_FONT_SIZE, MEDIUM_FONT_SIZE, MINIMUM_WIDHT
+from variables import BIG_FONT_SIZE, MINIMUM_WIDHT
 
 
 class ActivationButton(QPushButton):

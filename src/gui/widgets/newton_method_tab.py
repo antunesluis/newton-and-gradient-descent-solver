@@ -6,7 +6,7 @@ from gui.widgets.graph import GraphWidget
 from gui.widgets.table import TableWidget
 from gui.widgets.result_display import ResultDisplay
 from methods.equation_manager import EquationManager
-from methods.newton_method import calculate_newton_method
+from methods.newton_method import CalculateNewtonMethod
 
 
 class NewtonMethodTab(QWidget):
@@ -44,7 +44,6 @@ class NewtonMethodTab(QWidget):
         self.initialValuesLayout.addWidget(self.xInitial)
         self.initialValuesLayout.addWidget(self.yInitial)
 
-        # Adicionando o botão de ativação
         self.activateButton = ActivationButton("Ativar")
         self.activateButton.clicked.connect(self.activateNewtonMethod)
         self.initialValuesLayout.addWidget(self.activateButton)
@@ -61,13 +60,13 @@ class NewtonMethodTab(QWidget):
     def saveEquation1(self):
         print(f"Equation 1: {self.equation_manager.equation1}")
         self.clearInitialValues()
-        self.equation_manager.set_equation1(self.equationInput1.text())
+        self.equation_manager.setEquation1(self.equationInput1.text())
         self.updateGraph()
 
     def saveEquation2(self):
         print(f"Equation 2: {self.equation_manager.equation2}")
         self.clearInitialValues()
-        self.equation_manager.set_equation2(self.equationInput2.text())
+        self.equation_manager.setEquation2(self.equationInput2.text())
         self.updateGraph()
 
     def saveInitialValues(self):
@@ -81,7 +80,7 @@ class NewtonMethodTab(QWidget):
 
     def updateGraph(self):
         self.resultDisplay.resetResults()
-        f1, f2 = self.equation_manager.get_lambdified_functions()
+        f1, f2 = self.equation_manager.getLambdifiedFunctions()
         if f1 is not None:
             self.graphWidget.plot(f1, f2)
             return
@@ -97,18 +96,31 @@ class NewtonMethodTab(QWidget):
         x0 = self.xInitial.text()
         y0 = self.yInitial.text()
 
-        if equation1 and equation2 and x0 and y0:
-            try:
-                x0 = float(x0)
-                y0 = float(y0)
-                x_final, y_final, points = calculate_newton_method(
-                    equation1, equation2, x0, y0
-                )
-                self.resultDisplay.updateResults(x_final, y_final)
-
-                # Plotando novamente o gráfico para limpar os pontos anteriores
-                self.graphWidget.plot_points(points)
-            except ValueError:
-                print("Erro: Os valores iniciais x0 e y0 devem ser números.")
-        else:
+        # Verificação de preenchimento dos campos
+        if not (equation1 and equation2 and x0 and y0):
             print("Erro: Preencha todas as equações e valores iniciais.")
+            return
+
+        try:
+            x0 = float(x0)
+            y0 = float(y0)
+        except ValueError:
+            print("Erro: Os valores iniciais x0 e y0 devem ser números.")
+            return
+
+        f1, f2 = self.equation_manager.getLambdifiedFunctions()
+        if f1 is None or f2 is None:
+            print(
+                "Erro: Não foi possível lambdificar as equações. Verifique as equações de entrada."
+            )
+            return
+
+        x_final, y_final, points = CalculateNewtonMethod(equation1, equation2, x0, y0)
+        self.resultDisplay.updateResults(x_final, y_final)
+        self.graphWidget.plot_points(points)
+
+        # Preencher a tabela com os dados da progressão
+        data = []
+        for n, (xn, yn) in enumerate(points):
+            data.append([n, xn, yn, f1(xn, yn), f2(xn, yn)])
+        self.tableWidget.update_table(data)

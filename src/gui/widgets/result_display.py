@@ -9,7 +9,6 @@ class ResultDisplay(QWidget):
         super().__init__(*args, **kwargs)
         self.fontSize = MEDIUM_FONT_SIZE
 
-        # Inicialize os valores de resultado com um texto padrão
         self.xResult = QLabel("X: --")
         self.yResult = QLabel("Y: --")
         self.configStyle()
@@ -21,11 +20,9 @@ class ResultDisplay(QWidget):
         self.setLayout(layout)
 
     def configStyle(self):
-        # Configure o estilo da fonte
         font = self.font()
         font.setPointSize(self.fontSize)
 
-        # Configure o estilo dos labels
         self.xResult.setFont(font)
         self.yResult.setFont(font)
 
@@ -37,10 +34,14 @@ class ResultDisplay(QWidget):
         )
 
     def updateResults(self, x_value, y_value):
-        # Atualize os textos dos labels com os valores encontrados
-        self.xResult.setText(f"X: {x_value}")
-        self.yResult.setText(f"Y: {y_value}")
+        formatted_x_value = (
+            f"{x_value:.4f}" if isinstance(x_value, (int, float)) else x_value
+        )
+        formatted_y_value = (
+            f"{y_value:.4f}" if isinstance(y_value, (int, float)) else y_value
+        )
+        self.xResult.setText(f"X: {formatted_x_value}")
+        self.yResult.setText(f"Y: {formatted_y_value}")
 
     def resetResults(self):
         self.updateResults("--", "--")
-

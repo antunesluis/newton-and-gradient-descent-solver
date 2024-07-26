@@ -18,5 +18,4 @@ class EquationInput(QLineEdit):
         self.setTextMargins(*margins)
 
     def onReturnPressed(self):
-        # Emite o sinal com o texto atual quando Enter é pressionado
-        self.returnPressed.emit()  # Emite o sinal returnPressed
+        self.returnPressed.emit()

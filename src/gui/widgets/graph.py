@@ -37,7 +37,7 @@ class GraphWidget(QWidget):
 
     def plot(self, f1, f2=None):
         self.clear()
-        self.configStyle()  # Ensure styles are applied after clearing
+        self.configStyle()
 
         x = np.linspace(-10, 10, 400)
         y = np.linspace(-10, 10, 400)

@@ -1,0 +1,66 @@
+import sympy as sp
+import numpy as np
+
+def calculate_newton_method(equation1, equation2, x0, y0, tolerance=1e-6, max_iterations=100):
+    """
+    Resolve um sistema de equações não lineares usando o método de Newton.
+
+    Args:
+        equation1 (str): A primeira equação na forma de string.
+        equation2 (str): A segunda equação na forma de string.
+        x0 (float): Valor inicial para x.
+        y0 (float): Valor inicial para y.
+        tolerance (float): Tolerância para a convergência do método.
+        max_iterations (int): Número máximo de iterações permitidas.
+
+    Returns:
+        tuple: Contém os valores finais (x, y) e a lista de pontos iterados.
+    """
+    # Definindo os símbolos x e y
+    x_sym, y_sym = sp.symbols("x y")
+    
+    # Convertendo as equações de string para expressões simbólicas
+    eq1_sym = sp.sympify(equation1.replace("^", "**"))
+    eq2_sym = sp.sympify(equation2.replace("^", "**"))
+
+    # Calculando a matriz Jacobiana das equações
+    jacobian = sp.Matrix([
+        [eq1_sym.diff(x_sym), eq1_sym.diff(y_sym)],
+        [eq2_sym.diff(x_sym), eq2_sym.diff(y_sym)],
+    ])
+
+    # Lambdificando as equações e a matriz Jacobiana para avaliação numérica
+    f1 = sp.lambdify((x_sym, y_sym), eq1_sym, "numpy")
+    f2 = sp.lambdify((x_sym, y_sym), eq2_sym, "numpy")
+    jacobian_func = sp.lambdify((x_sym, y_sym), jacobian, "numpy")
+
+    def newton_step(x, y):
+        """
+        Executa um passo do método de Newton.
+
+        Args:
+            x (float): Valor atual de x.
+            y (float): Valor atual de y.
+
+        Returns:
+            tuple: Novos valores de (x, y) após o passo de Newton.
+        """
+        F = np.array([f1(x, y), f2(x, y)])  # Calcula F(x, y)
+        J = np.array(jacobian_func(x, y))   # Calcula a matriz Jacobiana J(x, y)
+        delta = np.linalg.solve(J, F)       # Resolve J * delta = F para delta
+        return x - delta[0], y - delta[1]   # Atualiza x e y
+
+    x, y = x0, y0  # Inicializa os valores de x e y
+    points = [(x, y)]  # Lista para armazenar os pontos iterados
+
+    # Itera até o número máximo de iterações ou até a convergência
+    for _ in range(max_iterations):
+        x_new, y_new = newton_step(x, y)  # Executa um passo do método de Newton
+        points.append((x_new, y_new))     # Armazena o novo ponto
+        # Verifica a convergência
+        if abs(x_new - x) < tolerance and abs(y_new - y) < tolerance:
+            return x_new, y_new, points  # Retorna o resultado final e os pontos iterados
+        x, y = x_new, y_new  # Atualiza os valores de x e y para a próxima iteração
+
+    # Caso o método não converja, retorna None para os valores finais e os pontos iterados
+    return None, None, points

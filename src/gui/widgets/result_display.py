@@ -41,3 +41,6 @@ class ResultDisplay(QWidget):
         self.xResult.setText(f"X: {x_value}")
         self.yResult.setText(f"Y: {y_value}")
 
+    def resetResults(self):
+        self.updateResults("--", "--")
+

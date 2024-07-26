@@ -12,7 +12,7 @@ class GraphWidget(QWidget):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        self.figure, self.ax = plt.subplots()
+        self.figure, self.ax = plt.subplots(figsize=(10, 8))
         self.canvas = FigureCanvas(self.figure)
         layout.addWidget(self.canvas)
 
@@ -32,10 +32,11 @@ class GraphWidget(QWidget):
         # Configura a grade com opacidade
         self.ax.grid(True, which="both", linestyle="--", linewidth=0.5, alpha=0.5)
 
+        self.figure.tight_layout()
         self.ax.autoscale()
 
     def plot(self, f1, f2=None):
-        self.ax.clear()
+        self.clear()
         self.configStyle()  # Ensure styles are applied after clearing
 
         x = np.linspace(-10, 10, 400)
@@ -43,20 +44,20 @@ class GraphWidget(QWidget):
         X, Y = np.meshgrid(x, y)
 
         Z1 = f1(X, Y)
-        contour1 = self.ax.contour(X, Y, Z1, levels=[0], colors="r", linestyles="solid")
+        self.ax.contour(X, Y, Z1, levels=[0], colors="r", linestyles="solid")
 
         if f2 is not None:
             Z2 = f2(X, Y)
-            contour2 = self.ax.contour(
-                X, Y, Z2, levels=[0], colors="b", linestyles="dashed"
-            )
+            self.ax.contour(X, Y, Z2, levels=[0], colors="b", linestyles="dashed")
 
-            self.ax.legend(
-                [contour1.collections[0], contour2.collections[0]],
-                ["Equation 1", "Equation 2"],
-                loc="upper right",
-            )
-        else:
-            self.ax.legend([contour1.collections[0]], ["Equation 1"], loc="upper right")
-
+        self.figure.tight_layout()
         self.canvas.draw()
+
+    def plot_points(self, points):
+        x_points, y_points = zip(*points)
+        self.ax.plot(x_points, y_points, "go-")
+        self.canvas.draw()
+
+    def clear(self):
+        self.ax.cla()
+        self.figure.tight_layout()

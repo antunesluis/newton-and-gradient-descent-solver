@@ -12,50 +12,46 @@ from methods.newton_method import CalculateNewtonMethod
 class NewtonMethodTab(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-
         self.equation_manager = EquationManager()
+        self.setupIu()
 
-        self.tab1 = QWidget()
-        self.tab1Layout = QGridLayout(self)
+    def setupIu(self):
+        self.tabLayout = QGridLayout(self)
 
         self.graphWidget = GraphWidget()
         self.tableWidget = TableWidget()
-
         self.resultDisplay = ResultDisplay()
         self.equationInput1 = EquationInput("f(x, y)")
         self.equationInput2 = EquationInput("g(x, y)")
         self.xInitial = EquationInput("Initial x")
         self.yInitial = EquationInput("Initial y")
+        self.activateButton = ActivationButton("Calcular")
 
         self.equationInput1.returnPressed.connect(self.saveEquation1)
         self.equationInput2.returnPressed.connect(self.saveEquation2)
         self.xInitial.returnPressed.connect(self.saveInitialValues)
         self.yInitial.returnPressed.connect(self.saveInitialValues)
+        self.activateButton.clicked.connect(self.activateNewtonMethod)
 
-        self.layout1 = QVBoxLayout()
-        self.layout1.addWidget(self.graphWidget)
-        self.layout2 = QVBoxLayout()
-
-        self.layout2.addWidget(self.tableWidget)
-        self.layout2.addWidget(self.equationInput1)
-        self.layout2.addWidget(self.equationInput2)
+        self.leftLayout = QVBoxLayout()
+        self.leftLayout.addWidget(self.graphWidget)
 
         self.initialValuesLayout = QHBoxLayout()
         self.initialValuesLayout.addWidget(self.xInitial)
         self.initialValuesLayout.addWidget(self.yInitial)
-
-        self.activateButton = ActivationButton("Ativar")
-        self.activateButton.clicked.connect(self.activateNewtonMethod)
         self.initialValuesLayout.addWidget(self.activateButton)
 
-        self.layout2.addLayout(self.initialValuesLayout)
+        self.rightLayout = QVBoxLayout()
+        self.rightLayout.addWidget(self.tableWidget)
+        self.rightLayout.addWidget(self.equationInput1)
+        self.rightLayout.addWidget(self.equationInput2)
+        self.rightLayout.addLayout(self.initialValuesLayout)
+        self.rightLayout.addWidget(self.resultDisplay)
+        self.rightLayout.setContentsMargins(20, 20, 50, 20)
+        self.rightLayout.setSpacing(10)
 
-        self.layout2.addWidget(self.resultDisplay)
-        self.layout2.setContentsMargins(20, 20, 50, 20)
-        self.layout2.setSpacing(10)
-
-        self.tab1Layout.addLayout(self.layout1, 0, 0, 1, 3)
-        self.tab1Layout.addLayout(self.layout2, 0, 3, 1, 2)
+        self.tabLayout.addLayout(self.leftLayout, 0, 0, 1, 3)
+        self.tabLayout.addLayout(self.rightLayout, 0, 3, 1, 2)
 
     def saveEquation1(self):
         print(f"Equation 1: {self.equation_manager.equation1}")
@@ -82,7 +78,7 @@ class NewtonMethodTab(QWidget):
         self.resultDisplay.resetResults()
         f1, f2 = self.equation_manager.getLambdifiedFunctions()
         if f1 is not None:
-            self.graphWidget.plot(f1, f2)
+            self.graphWidget.plot2DFunctions(f1, f2)
             return
 
         print(
@@ -117,10 +113,10 @@ class NewtonMethodTab(QWidget):
 
         x_final, y_final, points = CalculateNewtonMethod(equation1, equation2, x0, y0)
         self.resultDisplay.updateResults(x_final, y_final)
-        self.graphWidget.plot_points(points)
+        self.graphWidget.plotPoints(points)
 
         # Preencher a tabela com os dados da progressão
         data = []
         for n, (xn, yn) in enumerate(points):
             data.append([n, xn, yn, f1(xn, yn), f2(xn, yn)])
-        self.tableWidget.update_table(data)
+        self.tableWidget.updateTable(data)

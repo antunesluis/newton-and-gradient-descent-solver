@@ -17,7 +17,7 @@ class TableWidget(QTableWidget):
         header.setFont(headerFont)
         header.setSectionResizeMode(QHeaderView.Stretch)  # type: ignore
 
-    def update_table(self, data):
+    def updateTable(self, data):
         self.setRowCount(len(data))
         font = QFont()
         font.setPointSize(12)

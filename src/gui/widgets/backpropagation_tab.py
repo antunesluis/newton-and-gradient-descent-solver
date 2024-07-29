@@ -3,10 +3,12 @@ from PySide6.QtWidgets import QHBoxLayout, QWidget, QVBoxLayout, QGridLayout
 from gui.widgets.activation_button import ActivationButton
 from gui.widgets.equation_input import EquationInput
 from gui.widgets.graph import GraphWidget
+from gui.widgets.message_box import MessageBox
 from gui.widgets.table import TableWidget
 from gui.widgets.result_display import ResultDisplay
 from methods.equation_manager import EquationManager
 from methods.backpropagation import CalculateBackpropagation
+from utils.exceptions import InitialValuesError, InvalidEquationError
 
 
 class BackpropagationTab(QWidget):
@@ -26,9 +28,9 @@ class BackpropagationTab(QWidget):
         self.yInitialInput = EquationInput("Initial y")
         self.activateButton = ActivationButton("Calcular")
 
-        self.xInitialInput.returnPressed.connect(self.saveInitialValues)
+        self.xInitialInput.returnPressed.connect(self.saveXInitialValue)
+        self.yInitialInput.returnPressed.connect(self.saveYInitialValue)
         self.equationInput.returnPressed.connect(self.saveEquation)
-        self.yInitialInput.returnPressed.connect(self.saveInitialValues)
         self.activateButton.clicked.connect(self.activateBackpropagation)
 
         self.leftLayout = QVBoxLayout()
@@ -50,16 +52,51 @@ class BackpropagationTab(QWidget):
         self.tabLayout.addLayout(self.leftLayout, 0, 0, 1, 3)
         self.tabLayout.addLayout(self.rightLayout, 0, 3, 1, 2)
 
+    @Slot()
     def saveEquation(self):
-        print(f"Equation: {self.equationManager.equation1}")
         self.clearInitialValues()
-        self.equationManager.setEquation1(self.equationInput.text())
-        self.updateGraph()
+        try:
+            currentStrEq = self.equationInput.text()
+            if currentStrEq != self.equationManager.strEquation1:
+                self.equationManager.setStrEquation1(currentStrEq)
+                self.equationManager.setLambdifiedEquation1(currentStrEq)
 
-    def saveInitialValues(self):
-        x0 = self.xInitialInput.text()
-        y0 = self.yInitialInput.text()
-        print(f"Initial Values: x0 = {x0}, y0 = {y0}")
+            print(f"Equation 1: {currentStrEq}")
+            self.updateGraph()
+        except InvalidEquationError as e:
+            MessageBox.showErrorMessage(
+                self, "Erro", f"Erro ao lambdificar equação: {str(e)}"
+            )
+        except Exception as e:
+            MessageBox.showErrorMessage(self, "Erro inesperado", str(e))
+
+    def validateAndSetInitialValue(self, value, setterFunc, valueName):
+        try:
+            valueText = value.text().strip()
+            setterFunc(valueText)
+            print(
+                f"Initial Value {valueName} = {getattr(self.equationManager, valueName)}"
+            )
+        except InitialValuesError as e:
+            MessageBox.showErrorMessage(
+                self, "Erro", f"Erro ao receber valor inicial de {valueName}: {str(e)}"
+            )
+        except Exception as e:
+            MessageBox.showErrorMessage(self, "Erro inesperado", str(e))
+
+    @Slot()
+    def saveXInitialValue(self):
+        """Salva o valor inicial de x e o imprime no console."""
+        self.validateAndSetInitialValue(
+            self.xInitialInput, self.equationManager.setXInitial, "xInitial"
+        )
+
+    @Slot()
+    def saveYInitialValue(self):
+        """Salva o valor inicial de y e o imprime no console."""
+        self.validateAndSetInitialValue(
+            self.yInitialInput, self.equationManager.setYInitial, "yInitial"
+        )
 
     def clearInitialValues(self):
         self.xInitialInput.clear()
@@ -67,37 +104,26 @@ class BackpropagationTab(QWidget):
 
     def updateGraph(self):
         self.resultDisplay.resetResults()
-        f1 = self.equationManager.getLambdifiedFunction()
-        if f1 is not None:
-            self.graphWidget.plotContours(f1)
-            return
-
-        print(
-            "Erro: Não foi possível atualizar o gráfico devido a uma equação inválida."
-        )
+        try:
+            lambdified_func1 = self.equationManager.lambdifiedEquation1
+            if lambdified_func1 is not None:
+                self.graphWidget.plotContours(lambdified_func1)
+                return
+        except Exception:
+            MessageBox.showErrorMessage(
+                self, "Erro", "Erro inesperado ao atualizar gráfico"
+            )
 
     @Slot()
     def activateBackpropagation(self):
-        equation = self.equationManager.equation1
-        x0 = self.xInitialInput.text()
-        y0 = self.yInitialInput.text()
+        equation = self.equationManager.strEquation1
+        x0 = self.equationManager.xInitial
+        y0 = self.equationManager.yInitial
 
         # Verificação de preenchimento dos campos
         if not (equation and x0 and y0):
-            print("Erro: Preencha a equação e os valores iniciais.")
-            return
-
-        try:
-            x0 = float(x0)
-            y0 = float(y0)
-        except ValueError:
-            print("Erro: Os valores iniciais x0 e y0 devem ser números.")
-            return
-
-        f = self.equationManager.getLambdifiedFunction()
-        if f is None:
-            print(
-                "Erro: Não foi possível lambdificar a equação. Verifique a equação de entrada."
+            MessageBox.showWarningMessage(
+                self, "Inputs faltando", "Preencha todas as equações e valores iniciais"
             )
             return
 

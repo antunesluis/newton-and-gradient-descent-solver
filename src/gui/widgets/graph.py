@@ -76,10 +76,6 @@ class GraphWidget(QWidget):
             xPoints,
             yPoints,
             "go-",
-            marker="o",
-            linestyle="-",
-            # markersize=5,
-            # markeredgewidth=0.5,
         )
         self.canvas.draw()
 

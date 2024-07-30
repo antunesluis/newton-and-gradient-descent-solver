@@ -19,4 +19,7 @@ MINIMUM_WIDHT = 150
 # Range for x and y
 XY_RANGE = (-10, 10)
 
-# Levels for graph
+# Backpropagation
+LEARNING_RATE_BACKPROP = 0.001
+TOLERANCE_BACKPROP = 1e-6
+MAX_ITERATIONS_BACKPROP = 10000

@@ -8,7 +8,7 @@ from gui.widgets.table import TableWidget
 from gui.widgets.result_display import ResultDisplay
 from methods.equation_manager import EquationManager
 from methods.backpropagation import CalculateBackpropagation
-from utils.exceptions import InitialValuesError, InvalidEquationError
+from utils.exceptions import CalculationError, InitialValuesError, InvalidEquationError
 
 
 class BackpropagationTab(QWidget):
@@ -21,7 +21,7 @@ class BackpropagationTab(QWidget):
         self.tabLayout = QGridLayout(self)
 
         self.graphWidget = GraphWidget()
-        self.tableWidget = TableWidget()
+        self.tableWidget = TableWidget(2, ["xn", "yn"])
         self.resultDisplay = ResultDisplay()
         self.equationInput = EquationInput("f(x, y)")
         self.xInitialInput = EquationInput("Initial x")
@@ -114,25 +114,36 @@ class BackpropagationTab(QWidget):
                 self, "Erro", "Erro inesperado ao atualizar gráfico"
             )
 
+    def updateTable(self, points):
+        """Atualiza a tabela com os dados da progressão."""
+        data = []
+        for _, (xn, yn) in enumerate(points):
+            data.append([xn, yn])
+        self.tableWidget.updateTable(data)
+
     @Slot()
     def activateBackpropagation(self):
-        equation = self.equationManager.strEquation1
-        x0 = self.equationManager.xInitial
-        y0 = self.equationManager.yInitial
+        try:
+            equation = self.equationManager.strEquation1
+            x0 = self.equationManager.xInitial
+            y0 = self.equationManager.yInitial
 
-        # Verificação de preenchimento dos campos
-        if not (equation and x0 and y0):
-            MessageBox.showWarningMessage(
-                self, "Inputs faltando", "Preencha todas as equações e valores iniciais"
+            if not (equation and x0 and y0):
+                MessageBox.showWarningMessage(
+                    self,
+                    "Inputs faltando",
+                    "Preencha todas as equações e valores iniciais",
+                )
+                return
+
+            x_final, y_final, points = CalculateBackpropagation(equation, x0, y0)
+            self.resultDisplay.updateResults(x_final, y_final)
+            self.graphWidget.plotPoints(points)
+            self.updateTable(points)
+
+        except CalculationError as e:
+            MessageBox.showErrorMessage(
+                self, "Erro", f"Erro ao realizar o cálculo do método: {str(e)}"
             )
-            return
-
-        x_final, y_final, points = CalculateBackpropagation(equation, x0, y0)
-        self.resultDisplay.updateResults(x_final, y_final)
-        self.graphWidget.plotPoints(points)
-
-        # Preenche a tabela com os dados da progressão
-        data = []
-        for n, (xn, yn) in enumerate(points):
-            data.append([n, xn, yn])
-        self.tableWidget.updateTable(data)
+        except Exception as e:
+            MessageBox.showErrorMessage(self, "Erro inesperado", str(e))

@@ -22,7 +22,7 @@ class NewtonMethodTab(QWidget):
         self.tabLayout = QGridLayout(self)
 
         self.graphWidget = GraphWidget()
-        self.tableWidget = TableWidget()
+        self.tableWidget = TableWidget(4, ["xn", "yn", "f(xn, yn)", "g(xn, yn)"])
         self.resultDisplay = ResultDisplay()
         self.equationInput1 = EquationInput("f(x, y)")
         self.equationInput2 = EquationInput("g(x, y)")
@@ -147,15 +147,6 @@ class NewtonMethodTab(QWidget):
 
     def updateTable(self, points):
         """Atualiza a tabela com os dados da progressão."""
-        lambdifiedEquation1 = self.equationManager.lambdifiedEquation1
-        lambdifiedEquation2 = self.equationManager.lambdifiedEquation2
-
-        if lambdifiedEquation1 and lambdifiedEquation2:
-            data = [
-                [n, xn, yn, lambdifiedEquation1(xn, yn), lambdifiedEquation2(xn, yn)]
-                for n, (xn, yn) in enumerate(points)
-            ]
-            self.tableWidget.updateTable(data)
 
     @Slot()
     def activateNewtonMethod(self):
@@ -180,4 +171,3 @@ class NewtonMethodTab(QWidget):
             )
         except Exception as e:
             MessageBox.showErrorMessage(self, "Erro inesperado", str(e))
-

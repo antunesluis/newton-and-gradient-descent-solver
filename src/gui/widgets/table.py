@@ -3,12 +3,11 @@ from PySide6.QtGui import QFont
 
 
 class TableWidget(QTableWidget):
-    def __init__(self, parent=None):
+    def __init__(self, column_count: int, headers, parent=None):
         super().__init__(parent)
-        self.setColumnCount(5)
-        self.setHorizontalHeaderLabels(["n", "xn", "yn", "f(xn, yn)", "g(xn, yn)"])
+        self.setColumnCount(column_count)
+        self.setHorizontalHeaderLabels(headers)
         self.resizeColumnsToContents()
-
         self.resizeRowsToContents()
 
         header = self.horizontalHeader()
@@ -20,7 +19,7 @@ class TableWidget(QTableWidget):
     def updateTable(self, data):
         self.setRowCount(len(data))
         font = QFont()
-        font.setPointSize(12)
+        font.setPointSize(14)
 
         for row_idx, row_data in enumerate(data):
             for col_idx, col_data in enumerate(row_data):

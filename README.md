@@ -2,6 +2,14 @@
 
 This project was developed as part of the Calculus B course during my undergraduate studies. It implements a graphical calculator to solve equations using the Newton Method and the Backpropagation algorithm.
 
+## Newton Method Interface
+
+![Newton Method Interface](https://github.com/antunesluis/newton-backprop-solver/blob/main/newton-method.png)
+
+## Backpropagation Interface
+
+![Backpropagation Interface](https://github.com/antunesluis/newton-backprop-solver/blob/main/backpropagation.png)
+
 ## Overview
 
 This project consists of two main parts:

@@ -1,12 +1,18 @@
 import sympy as sp
 import numpy as np
+from typing import List, Tuple
 
 from utils.exceptions import CalculationError
 
 
-def CalculateNewtonMethod(
-    equation1, equation2, x0, y0, tolerance=1e-6, max_iterations=100
-):
+def calculateNewtonMethod(
+    equation1: str,
+    equation2: str,
+    x0: float,
+    y0: float,
+    tolerance: float = 0.000001,
+    max_iterations: int = 100,
+) -> Tuple[float, float, List[Tuple[float, float]]]:
     """
     Resolve um sistema de equações não lineares usando o método de Newton.
 
@@ -19,7 +25,7 @@ def CalculateNewtonMethod(
         max_iterations (int): Número máximo de iterações permitidas.
 
     Returns:
-        tuple: Contém os valores finais (x, y) e a lista de pontos iterados.
+        Tuple[float, float, List[Tuple[float, float]]]: Contém os valores finais (x, y) e a lista de pontos iterados.
     """
     try:
         # Definindo os símbolos x e y
@@ -47,7 +53,7 @@ def CalculateNewtonMethod(
             f"Erro ao preparar as equações/matriz Jacobiana: {str(e)}"
         )
 
-    def newton_step(x, y):
+    def newton_step(x: float, y: float) -> Tuple[float, float]:
         """
         Executa um passo do método de Newton.
 
@@ -56,7 +62,7 @@ def CalculateNewtonMethod(
             y (float): Valor atual de y.
 
         Returns:
-            tuple: Novos valores de (x, y) após o passo de Newton.
+            Tuple[float, float]: Novos valores de (x, y) após o passo de Newton.
         """
         try:
             F = np.array([f1(x, y), f2(x, y)])  # Calcula F(x, y)
@@ -69,7 +75,9 @@ def CalculateNewtonMethod(
             raise CalculationError(f"Erro ao executar o passo de Newton: {str(e)}")
 
     x, y = x0, y0  # Inicializa os valores de x e y
-    points = [(x, y)]  # Lista para armazenar os pontos iterados
+    points: List[Tuple[float, float]] = [
+        (x, y)
+    ]  # Lista para armazenar os pontos iterados
 
     # Itera até o número máximo de iterações ou até a convergência
     for _ in range(max_iterations):
@@ -91,3 +99,4 @@ def CalculateNewtonMethod(
     raise CalculationError(
         "O método de Newton não convergiu após o número máximo de iterações."
     )
+

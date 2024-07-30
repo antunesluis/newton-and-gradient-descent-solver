@@ -12,27 +12,27 @@ class EquationManager:
         self.lambdifiedEquation1 = None
         self.lambdifiedEquation2 = None
 
-    def setXInitial(self, val):
+    def setXInitial(self, val: str) -> None:
         try:
             self.xInitial = float(val)
         except ValueError:
             raise InitialValuesError("O x inicial precisa ser um número válido")
 
-    def setYInitial(self, val):
+    def setYInitial(self, val: str) -> None:
         try:
             self.yInitial = float(val)
         except ValueError:
             raise InitialValuesError("O y inicial precisa ser um número válido")
 
-    def setStrEquation1(self, equation):
+    def setStrEquation1(self, equation: str) -> None:
         if equation != self.strEquation1:
             self.strEquation1 = equation
 
-    def setStrEquation2(self, equation):
+    def setStrEquation2(self, equation: str) -> None:
         if equation != self.strEquation2:
             self.strEquation2 = equation
 
-    def setLambdifiedEquation1(self, equation):
+    def setLambdifiedEquation1(self, equation: str) -> None:
         try:
             xSym, ySym = sp.symbols("x y")
             eq1Sym = sp.sympify(equation.replace("^", "**"))
@@ -43,7 +43,7 @@ class EquationManager:
                 "Equação f(x, y) inválida, erro ao avaliar equação."
             )
 
-    def setLambdifiedEquation2(self, equation):
+    def setLambdifiedEquation2(self, equation: str) -> None:
         try:
             xSym, ySym = sp.symbols("x y")
             eq2Sym = sp.sympify(equation.replace("^", "**"))
@@ -53,4 +53,3 @@ class EquationManager:
             raise InvalidEquationError(
                 "Equação g(x, y) inválida, erro ao avaliar equação."
             )
-

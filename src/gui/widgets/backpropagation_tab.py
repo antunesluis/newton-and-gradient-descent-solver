@@ -1,5 +1,7 @@
+from typing import List, Tuple
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QHBoxLayout, QWidget, QVBoxLayout, QGridLayout
+from sympy.strategies.core import Callable
 from gui.widgets.activation_button import ActivationButton
 from gui.widgets.equation_input import EquationInput
 from gui.widgets.graph import GraphWidget
@@ -7,17 +9,17 @@ from gui.widgets.message_box import MessageBox
 from gui.widgets.table import TableWidget
 from gui.widgets.result_display import ResultDisplay
 from methods.equation_manager import EquationManager
-from methods.backpropagation import CalculateBackpropagation
+from methods.backpropagation import calculateBackpropagation
 from utils.exceptions import CalculationError, InitialValuesError, InvalidEquationError
 
 
 class BackpropagationTab(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.equationManager = EquationManager()
         self.setupUi()
 
-    def setupUi(self):
+    def setupUi(self) -> None:
         self.tabLayout = QGridLayout(self)
 
         self.graphWidget = GraphWidget()
@@ -53,7 +55,7 @@ class BackpropagationTab(QWidget):
         self.tabLayout.addLayout(self.rightLayout, 0, 3, 1, 2)
 
     @Slot()
-    def saveEquation(self):
+    def saveEquation(self) -> None:
         self.clearInitialValues()
         try:
             currentStrEq = self.equationInput.text()
@@ -70,7 +72,9 @@ class BackpropagationTab(QWidget):
         except Exception as e:
             MessageBox.showErrorMessage(self, "Erro inesperado", str(e))
 
-    def validateAndSetInitialValue(self, value, setterFunc, valueName):
+    def validateAndSetInitialValue(
+        self, value: EquationInput, setterFunc: Callable, valueName: str
+    ) -> None:
         try:
             valueText = value.text().strip()
             setterFunc(valueText)
@@ -85,24 +89,24 @@ class BackpropagationTab(QWidget):
             MessageBox.showErrorMessage(self, "Erro inesperado", str(e))
 
     @Slot()
-    def saveXInitialValue(self):
+    def saveXInitialValue(self) -> None:
         """Salva o valor inicial de x e o imprime no console."""
         self.validateAndSetInitialValue(
             self.xInitialInput, self.equationManager.setXInitial, "xInitial"
         )
 
     @Slot()
-    def saveYInitialValue(self):
+    def saveYInitialValue(self) -> None:
         """Salva o valor inicial de y e o imprime no console."""
         self.validateAndSetInitialValue(
             self.yInitialInput, self.equationManager.setYInitial, "yInitial"
         )
 
-    def clearInitialValues(self):
+    def clearInitialValues(self) -> None:
         self.xInitialInput.clear()
         self.yInitialInput.clear()
 
-    def updateGraph(self):
+    def updateGraph(self) -> None:
         self.resultDisplay.resetResults()
         try:
             lambdified_func1 = self.equationManager.lambdifiedEquation1
@@ -114,7 +118,7 @@ class BackpropagationTab(QWidget):
                 self, "Erro", "Erro inesperado ao atualizar gráfico"
             )
 
-    def updateTable(self, points):
+    def updateTable(self, points: List[Tuple[float, float]]) -> None:
         """Atualiza a tabela com os dados da progressão."""
         data = []
         for _, (xn, yn) in enumerate(points):
@@ -122,7 +126,7 @@ class BackpropagationTab(QWidget):
         self.tableWidget.updateTable(data)
 
     @Slot()
-    def activateBackpropagation(self):
+    def activateBackpropagation(self) -> None:
         try:
             equation = self.equationManager.strEquation1
             x0 = self.equationManager.xInitial
@@ -136,7 +140,7 @@ class BackpropagationTab(QWidget):
                 )
                 return
 
-            x_final, y_final, points = CalculateBackpropagation(equation, x0, y0)
+            x_final, y_final, points = calculateBackpropagation(equation, x0, y0)
             self.resultDisplay.updateResults(x_final, y_final)
             self.graphWidget.plotPoints(points)
             self.updateTable(points)

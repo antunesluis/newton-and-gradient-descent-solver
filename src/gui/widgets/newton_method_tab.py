@@ -1,5 +1,7 @@
+from typing import List, Tuple
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QHBoxLayout, QWidget, QVBoxLayout, QGridLayout
+from sympy.core.sympify import Callable
 from gui.widgets.activation_button import ActivationButton
 from gui.widgets.equation_input import EquationInput
 from gui.widgets.graph import GraphWidget
@@ -7,7 +9,7 @@ from gui.widgets.message_box import MessageBox
 from gui.widgets.table import TableWidget
 from gui.widgets.result_display import ResultDisplay
 from methods.equation_manager import EquationManager
-from methods.newton_method import CalculateNewtonMethod
+from methods.newton_method import calculateNewtonMethod
 from utils.exceptions import CalculationError, InitialValuesError, InvalidEquationError
 
 
@@ -56,7 +58,9 @@ class NewtonMethodTab(QWidget):
         self.tabLayout.addLayout(self.leftLayout, 0, 0, 1, 3)
         self.tabLayout.addLayout(self.rightLayout, 0, 3, 1, 2)
 
-    def validateAndSetInitialValue(self, value, setterFunc, valueName):
+    def validateAndSetInitialValue(
+        self, value: EquationInput, setterFunc: Callable, valueName: str
+    ) -> None:
         try:
             valueText = value.text().strip()
             setterFunc(valueText)
@@ -71,21 +75,21 @@ class NewtonMethodTab(QWidget):
             MessageBox.showErrorMessage(self, "Erro inesperado", str(e))
 
     @Slot()
-    def saveXInitialValue(self):
+    def saveXInitialValue(self) -> None:
         """Salva o valor inicial de x e o imprime no console."""
         self.validateAndSetInitialValue(
             self.xInitial, self.equationManager.setXInitial, "xInitial"
         )
 
     @Slot()
-    def saveYInitialValue(self):
+    def saveYInitialValue(self) -> None:
         """Salva o valor inicial de y e o imprime no console."""
         self.validateAndSetInitialValue(
             self.yInitial, self.equationManager.setYInitial, "yInitial"
         )
 
     @Slot()
-    def saveEquations(self):
+    def saveEquations(self) -> None:
         """Salva as equações fornecidas e atualiza o gráfico."""
         self.clearInitialValues()
         try:
@@ -110,12 +114,12 @@ class NewtonMethodTab(QWidget):
         except Exception as e:
             MessageBox.showErrorMessage(self, "Erro inesperado", str(e))
 
-    def clearInitialValues(self):
+    def clearInitialValues(self) -> None:
         """Limpa os valores iniciais dos campos de entrada."""
         self.xInitial.clear()
         self.yInitial.clear()
 
-    def updateGraph(self):
+    def updateGraph(self) -> None:
         """Atualiza o gráfico com base nas funções lambdificadas."""
         self.resultDisplay.resetResults()
         try:
@@ -128,7 +132,7 @@ class NewtonMethodTab(QWidget):
                 self, "Erro", "Erro inesperado ao atualizar gráfico"
             )
 
-    def validateInputs(self):
+    def validateInputs(self) -> bool:
         """Valida se todos os campos obrigatórios estão preenchidos."""
         requiredFields = [
             self.equationManager.strEquation1,
@@ -145,21 +149,30 @@ class NewtonMethodTab(QWidget):
             return False
         return True
 
-    def updateTable(self, points):
+    def updateTable(self, points: List[Tuple[float, float]]) -> None:
         """Atualiza a tabela com os dados da progressão."""
+        lambdifiedEquation1 = self.equationManager.lambdifiedEquation1
+        lambdifiedEquation2 = self.equationManager.lambdifiedEquation2
+
+        if lambdifiedEquation1 and lambdifiedEquation2:
+            data = [
+                [xn, yn, lambdifiedEquation1(xn, yn), lambdifiedEquation2(xn, yn)]
+                for _, (xn, yn) in enumerate(points)
+            ]
+            self.tableWidget.updateTable(data)
 
     @Slot()
-    def activateNewtonMethod(self):
+    def activateNewtonMethod(self) -> None:
         """Ativa o método de Newton e atualiza a UI com os resultados."""
         if not self.validateInputs():
             return
 
         try:
-            xFinal, yFinal, points = CalculateNewtonMethod(
+            xFinal, yFinal, points = calculateNewtonMethod(
                 self.equationManager.strEquation1,
                 self.equationManager.strEquation2,
-                self.equationManager.xInitial,
-                self.equationManager.yInitial,
+                self.equationManager.xInitial,  # type: ignore
+                self.equationManager.yInitial,  # type: ignore
             )
             self.resultDisplay.updateResults(xFinal, yFinal)
             self.graphWidget.plotPoints(points)

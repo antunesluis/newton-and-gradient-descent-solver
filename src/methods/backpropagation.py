@@ -1,5 +1,6 @@
 import numpy as np
 import sympy as sp
+from typing import List, Tuple
 
 from utils.exceptions import CalculationError
 
@@ -8,10 +9,10 @@ def calculateBackpropagation(
     equation: str,
     x0: float,
     y0: float,
-    learningRate=1,
-    tolerance=0.000001,
-    maxIterations=10000,
-):
+    learningRate: float = 0.001,
+    tolerance: float = 0.000001,
+    maxIterations: int = 10000,
+) -> Tuple[float, float, List[Tuple[float, float]]]:
     """
     Realiza o cálculo do backpropagation para encontrar o mínimo de uma função.
 
@@ -24,7 +25,7 @@ def calculateBackpropagation(
         maxIterations (int): Número máximo de iterações permitidas.
 
     Returns:
-        tuple: Contém os valores finais (x, y) e a lista de pontos iterados.
+        Tuple[float, float, List[Tuple[float, float]]]: Contém os valores finais (x, y) e a lista de pontos iterados.
 
     Raises:
         CalculationError: Se ocorrer um erro durante o cálculo.
@@ -63,3 +64,4 @@ def calculateBackpropagation(
 
     except Exception as e:
         raise CalculationError(f"Erro no cálculo do backpropagation: {str(e)}")
+

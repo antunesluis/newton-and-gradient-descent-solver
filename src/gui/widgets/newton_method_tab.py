@@ -20,7 +20,6 @@ class NewtonMethodTab(QWidget):
         self.setupUI()
 
     def setupUI(self):
-        """Configura a interface do usuário."""
         self.tabLayout = QGridLayout(self)
 
         self.graphWidget = GraphWidget()
@@ -76,21 +75,18 @@ class NewtonMethodTab(QWidget):
 
     @Slot()
     def saveXInitialValue(self) -> None:
-        """Salva o valor inicial de x e o imprime no console."""
         self.validateAndSetInitialValue(
             self.xInitial, self.equationManager.setXInitial, "xInitial"
         )
 
     @Slot()
     def saveYInitialValue(self) -> None:
-        """Salva o valor inicial de y e o imprime no console."""
         self.validateAndSetInitialValue(
             self.yInitial, self.equationManager.setYInitial, "yInitial"
         )
 
     @Slot()
     def saveEquations(self) -> None:
-        """Salva as equações fornecidas e atualiza o gráfico."""
         self.clearInitialValues()
         try:
             currentStrEq1 = self.equationInput1.text()
@@ -115,12 +111,10 @@ class NewtonMethodTab(QWidget):
             MessageBox.showErrorMessage(self, "Erro inesperado", str(e))
 
     def clearInitialValues(self) -> None:
-        """Limpa os valores iniciais dos campos de entrada."""
         self.xInitial.clear()
         self.yInitial.clear()
 
     def updateGraph(self) -> None:
-        """Atualiza o gráfico com base nas funções lambdificadas."""
         self.resultDisplay.resetResults()
         try:
             lambdifiedFunc1 = self.equationManager.lambdifiedEquation1
@@ -133,7 +127,6 @@ class NewtonMethodTab(QWidget):
             )
 
     def validateInputs(self) -> bool:
-        """Valida se todos os campos obrigatórios estão preenchidos."""
         requiredFields = [
             self.equationManager.strEquation1,
             self.equationManager.strEquation2,
@@ -150,7 +143,6 @@ class NewtonMethodTab(QWidget):
         return True
 
     def updateTable(self, points: List[Tuple[float, float]]) -> None:
-        """Atualiza a tabela com os dados da progressão."""
         lambdifiedEquation1 = self.equationManager.lambdifiedEquation1
         lambdifiedEquation2 = self.equationManager.lambdifiedEquation2
 
@@ -163,7 +155,6 @@ class NewtonMethodTab(QWidget):
 
     @Slot()
     def activateNewtonMethod(self) -> None:
-        """Ativa o método de Newton e atualiza a UI com os resultados."""
         if not self.validateInputs():
             return
 

@@ -90,14 +90,12 @@ class BackpropagationTab(QWidget):
 
     @Slot()
     def saveXInitialValue(self) -> None:
-        """Salva o valor inicial de x e o imprime no console."""
         self.validateAndSetInitialValue(
             self.xInitialInput, self.equationManager.setXInitial, "xInitial"
         )
 
     @Slot()
     def saveYInitialValue(self) -> None:
-        """Salva o valor inicial de y e o imprime no console."""
         self.validateAndSetInitialValue(
             self.yInitialInput, self.equationManager.setYInitial, "yInitial"
         )
@@ -119,7 +117,6 @@ class BackpropagationTab(QWidget):
             )
 
     def updateTable(self, points: List[Tuple[float, float]]) -> None:
-        """Atualiza a tabela com os dados da progressão."""
         data = []
         for _, (xn, yn) in enumerate(points):
             data.append([xn, yn])

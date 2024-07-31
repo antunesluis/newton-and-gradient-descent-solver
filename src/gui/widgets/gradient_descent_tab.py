@@ -2,7 +2,7 @@ from typing import List, Tuple
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QHBoxLayout, QWidget, QVBoxLayout, QGridLayout
 from sympy.strategies.core import Callable
-from gradient_descent import calculateGradientDescent
+from methods.gradient_descent import calculateGradientDescent
 from gui.widgets.activation_button import ActivationButton
 from gui.widgets.equation_input import EquationInput
 from gui.widgets.graph import GraphWidget

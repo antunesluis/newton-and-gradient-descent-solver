@@ -1,21 +1,21 @@
-# Newton Method and Backpropagation Calculator
+# Newton Method and Gradient Descent
 
-This project was developed as part of the Calculus B course during my undergraduate studies. It implements a graphical calculator to solve equations using the Newton Method and the Backpropagation algorithm.
+This project was developed as part of the Calculus B course during my undergraduate studies. It implements a graphical calculator to solve equations using the Newton Method and the Gradient Descent algorithm.
 
 ## Newton Method Interface
 
-![Newton Method Interface](https://github.com/antunesluis/newton-backprop-solver/blob/main/newton-method.png)
+![Newton Method Interface](https://github.com/antunesluis/newton-and-gradient-descent-solver/blob/main/newton-method.png)
 
-## Backpropagation Interface
+## Gradient Descent Interface
 
-![Backpropagation Interface](https://github.com/antunesluis/newton-backprop-solver/blob/main/backpropagation.png)
+![Gradient Descent Interface](https://github.com/antunesluis/newton-and-gradient-descent-solver/blob/main/gradient-descent.png)
 
 ## Overview
 
 This project consists of two main parts:
 
 1. **Newton Method**: Implementation to find roots of a two-dimensional system of equations.
-2. **Backpropagation**: Implementation to find the minimum of a function using gradient descent.
+2. **Gradient Descent**: Implementation to find the minimum of a function using gradient descent.
 
 ## Features
 
@@ -36,13 +36,13 @@ This project consists of two main parts:
 1. Clone this repository:
 
 ```bash
-git clone https://github.com/usuario/newton-method-and-backprop.git
+git clone https://github.com/antunesluis/newton-and-gradient-descent-solver.git
 ```
 
 2. Navigate to the project directory:
 
 ```bash
-cd newton-method-and-backprop
+cd newton-and-gradient-descent-solver
 ```
 
 3. Create a virtual environment and activate it:
@@ -88,7 +88,7 @@ The equations must be input in a syntax understandable by the SymPy library. Som
 
 4. `g(x, y) = cos(y) - x`
 
-### Backpropagation
+### Gradient Descent
 
 1. `f(x, y) = (x - 2)**2 + (y - 3)**2`
 

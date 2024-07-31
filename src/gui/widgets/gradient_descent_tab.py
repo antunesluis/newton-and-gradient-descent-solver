@@ -2,6 +2,7 @@ from typing import List, Tuple
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QHBoxLayout, QWidget, QVBoxLayout, QGridLayout
 from sympy.strategies.core import Callable
+from gradient_descent import calculateGradientDescent
 from gui.widgets.activation_button import ActivationButton
 from gui.widgets.equation_input import EquationInput
 from gui.widgets.graph import GraphWidget
@@ -9,11 +10,10 @@ from gui.widgets.message_box import MessageBox
 from gui.widgets.table import TableWidget
 from gui.widgets.result_display import ResultDisplay
 from methods.equation_manager import EquationManager
-from methods.backpropagation import calculateBackpropagation
 from utils.exceptions import CalculationError, InitialValuesError, InvalidEquationError
 
 
-class BackpropagationTab(QWidget):
+class GradientDescentTab(QWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.equationManager = EquationManager()
@@ -33,7 +33,7 @@ class BackpropagationTab(QWidget):
         self.xInitialInput.returnPressed.connect(self.saveXInitialValue)
         self.yInitialInput.returnPressed.connect(self.saveYInitialValue)
         self.equationInput.returnPressed.connect(self.saveEquation)
-        self.activateButton.clicked.connect(self.activateBackpropagation)
+        self.activateButton.clicked.connect(self.activateGradientDescent)
 
         self.leftLayout = QVBoxLayout()
         self.leftLayout.addWidget(self.graphWidget)
@@ -123,7 +123,7 @@ class BackpropagationTab(QWidget):
         self.tableWidget.updateTable(data)
 
     @Slot()
-    def activateBackpropagation(self) -> None:
+    def activateGradientDescent(self) -> None:
         try:
             equation = self.equationManager.strEquation1
             x0 = self.equationManager.xInitial
@@ -137,7 +137,7 @@ class BackpropagationTab(QWidget):
                 )
                 return
 
-            x_final, y_final, points = calculateBackpropagation(equation, x0, y0)
+            x_final, y_final, points = calculateGradientDescent(equation, x0, y0)
             self.resultDisplay.updateResults(x_final, y_final)
             self.graphWidget.plotPoints(points)
             self.updateTable(points)

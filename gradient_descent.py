@@ -5,7 +5,7 @@ from typing import List, Tuple
 from utils.exceptions import CalculationError
 
 
-def calculateBackpropagation(
+def calculateGradientDescent(
     equation: str,
     x0: float,
     y0: float,
@@ -14,7 +14,7 @@ def calculateBackpropagation(
     maxIterations: int = 10000,
 ) -> Tuple[float, float, List[Tuple[float, float]]]:
     """
-    Realiza o cálculo do backpropagation para encontrar o mínimo de uma função.
+    Realiza o cálculo do gradient descent para encontrar o mínimo de uma função.
 
     Args:
         equation (str): A equação na forma de string.
@@ -63,5 +63,4 @@ def calculateBackpropagation(
         return x, y, points
 
     except Exception as e:
-        raise CalculationError(f"Erro no cálculo do backpropagation: {str(e)}")
-
+        raise CalculationError(f"Erro no cálculo do Gradient Descent: {str(e)}")

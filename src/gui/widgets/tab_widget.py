@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QTabWidget
-from gui.widgets.backpropagation_tab import BackpropagationTab
+from gui.widgets.gradient_descent_tab import GradientDescentTab
 from gui.widgets.newton_method_tab import NewtonMethodTab
 
 
@@ -17,6 +17,6 @@ class TabWidget(QWidget):
         self.newtonMethodTab = NewtonMethodTab()
         self.tabs.addTab(self.newtonMethodTab, "Método de Newton")
 
-        # Segunda aba - backpropagation
-        self.backpropagationTab = BackpropagationTab()
-        self.tabs.addTab(self.backpropagationTab, "Backpropagation")
+        # Segunda aba - Descida de Gradiente
+        self.gradientDescentTab = GradientDescentTab()
+        self.tabs.addTab(self.gradientDescentTab, "Descida de Gradiente")
